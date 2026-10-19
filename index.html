@@ -1,734 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <title>Love of my life 💕</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@1,300;1,400&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html, body {
-      width: 100%; height: 100%;
-      background: #000;
-      overflow-x: hidden;
-    }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Great Vibes', cursive;
-    }
-
-    /* ══════════════════════════════════════════
-       CANVAS — floating hearts
-    ══════════════════════════════════════════ */
-    #heart-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ══════════════════════════════════════════
-       CANVAS — growing flowers
-    ══════════════════════════════════════════ */
-    #flower-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* ══════════════════════════════════════════
-       VIGNETTE glow edges
-    ══════════════════════════════════════════ */
-    .vignette {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      background: radial-gradient(
-        ellipse at center,
-        transparent 40%,
-        rgba(120, 0, 60, 0.45) 100%
-      );
-    }
-
-    /* ══════════════════════════════════════════
-       TOP-LEFT LABEL
-    ══════════════════════════════════════════ */
-    .top-label {
-      position: fixed;
-      top: clamp(14px, 3vw, 28px);
-      left: clamp(16px, 3vw, 32px);
-      z-index: 10;
-      line-height: 1.15;
-    }
-
-    .top-label .line1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(1.5rem, 4.5vw, 3rem);
-      color: #ff69b4;
-      display: block;
-      text-shadow:
-        0 0 8px #ff69b4,
-        0 0 20px #ff1493,
-        0 0 45px rgba(255,20,147,0.6);
-      animation: pulse-label 3s ease-in-out infinite;
-    }
-
-    .top-label .line2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(0.75rem, 2vw, 1.1rem);
-      color: #ffb6c1;
-      display: block;
-      letter-spacing: 3px;
-      margin-top: 2px;
-      text-shadow: 0 0 10px rgba(255,105,180,0.6);
-      opacity: 0.9;
-    }
-
-    @keyframes pulse-label {
-      0%, 100% { text-shadow: 0 0 8px #ff69b4, 0 0 20px #ff1493, 0 0 45px rgba(255,20,147,0.6); }
-      50%       { text-shadow: 0 0 16px #ff1493, 0 0 40px #ff69b4, 0 0 80px rgba(255,20,147,0.8); }
-    }
-
-    /* ══════════════════════════════════════════
-       PAGE WRAPPER
-    ══════════════════════════════════════════ */
-    .page {
-      position: relative;
-      z-index: 5;
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: clamp(80px, 12vh, 120px) clamp(14px, 4vw, 40px) clamp(40px, 8vh, 80px);
-    }
-
-    /* ══════════════════════════════════════════
-       GALLERY
-    ══════════════════════════════════════════ */
-    .gallery {
-      display: flex;
-      flex-wrap: wrap;
-      gap: clamp(14px, 3vw, 30px);
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      max-width: 1000px;
-    }
-
-    /* ── Individual frame ── */
-    .photo-frame {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 2.5px solid #ff69b4;
-      flex-shrink: 0;
-
-      /* responsive sizing: fills available space, capped */
-      width:  clamp(200px, 26vw, 280px);
-      height: clamp(250px, 33vw, 350px);
-
-      box-shadow:
-        0 0 22px rgba(255,105,180,0.65),
-        0 0 55px rgba(255,20,147,0.3),
-        inset 0 0 18px rgba(255,105,180,0.08);
-
-      animation: float-frame 4.5s ease-in-out infinite;
-      transition: box-shadow 0.4s;
-    }
-
-    /* center photo — slightly bigger & brighter */
-    .photo-frame:nth-child(2) {
-      width:  clamp(220px, 30vw, 310px);
-      height: clamp(280px, 38vw, 390px);
-      border-color: #ff1493;
-      box-shadow:
-        0 0 35px rgba(255,20,147,0.85),
-        0 0 80px rgba(255,105,180,0.45),
-        inset 0 0 28px rgba(255,20,147,0.12);
-      animation-delay: 0.7s;
-      z-index: 2;
-    }
-
-    .photo-frame:nth-child(1) { animation-delay: 0s; }
-    .photo-frame:nth-child(3) { animation-delay: 1.4s; }
-
-    @keyframes float-frame {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50%       { transform: translateY(-14px) rotate(0.4deg); }
-    }
-
-    .photo-frame img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.5s ease;
-    }
-
-    /* Pink shimmer overlay at bottom */
-    .photo-frame::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        transparent 45%,
-        rgba(180, 0, 90, 0.28) 100%
-      );
-      pointer-events: none;
-      border-radius: 20px;
-    }
-
-    /* Corner rose accent */
-    .photo-frame::before {
-      content: '✿';
-      position: absolute;
-      top: 8px; right: 10px;
-      font-size: 1.1rem;
-      color: rgba(255,105,180,0.55);
-      pointer-events: none;
-      z-index: 3;
-      text-shadow: 0 0 8px #ff69b4;
-    }
-
-    /* Placeholder */
-    .photo-placeholder {
-      width: 100%; height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #0d000a 0%, #280018 50%, #0d000a 100%);
-      color: #ff69b4;
-      gap: 12px;
-    }
-    .photo-placeholder .ph-icon { font-size: 3rem; }
-    .photo-placeholder .ph-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 0.82rem;
-      color: #ffb6c1;
-      opacity: 0.65;
-      text-align: center;
-      padding: 0 12px;
-    }
-
-    /* ══════════════════════════════════════════
-       SPARKLE DOTS
-    ══════════════════════════════════════════ */
-    .sparkle {
-      position: fixed;
-      border-radius: 50%;
-      background: #ffb6c1;
-      pointer-events: none;
-      z-index: 1;
-      animation: sparkle-float linear infinite;
-      opacity: 0;
-    }
-    @keyframes sparkle-float {
-      0%   { transform: translateY(0) scale(0); opacity: 0; }
-      15%  { opacity: 0.8; transform: scale(1); }
-      85%  { opacity: 0.4; }
-      100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
-    }
-
-    /* ══════════════════════════════════════════
-       MOBILE — stack vertically on very narrow
-    ══════════════════════════════════════════ */
-    @media (max-width: 540px) {
-      .gallery {
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .photo-frame,
-      .photo-frame:nth-child(2) {
-        width: min(75vw, 300px);
-        height: min(90vw, 360px);
-      }
-
-      .top-label .line1 { font-size: clamp(1.6rem, 8vw, 2.4rem); }
-      .top-label .line2 { font-size: clamp(0.7rem, 3.5vw, 0.95rem); }
-    }
-
-    @media (min-width: 541px) and (max-width: 820px) {
-      .photo-frame,
-      .photo-frame:nth-child(2) {
-        width: clamp(155px, 27vw, 230px);
-        height: clamp(200px, 34vw, 290px);
-      }
-    }
-
-    /* ══════════════════════════════════════════
-       SPLASH / CLICK-ME SCREEN
-    ══════════════════════════════════════════ */
-    #splash {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      cursor: pointer;
-      transition: opacity 1.2s ease, backdrop-filter 1.2s ease;
-    }
-
-    #splash.hide {
-      opacity: 0;
-      pointer-events: none;
-      backdrop-filter: blur(0px);
-      -webkit-backdrop-filter: blur(0px);
-    }
-
-    #splash .splash-heart {
-      font-size: clamp(3rem, 10vw, 6rem);
-      animation: splash-beat 1.2s ease-in-out infinite;
-      filter: drop-shadow(0 0 18px #ff1493);
-      margin-bottom: 24px;
-    }
-
-    @keyframes splash-beat {
-      0%, 100% { transform: scale(1);    }
-      50%       { transform: scale(1.18); }
-    }
-
-    #splash .splash-text {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(2.4rem, 7vw, 5rem);
-      color: #ff69b4;
-      text-shadow:
-        0 0 12px #ff69b4,
-        0 0 30px #ff1493,
-        0 0 60px rgba(255,20,147,0.7);
-      animation: splash-glow 2s ease-in-out infinite;
-      letter-spacing: 2px;
-    }
-
-    @keyframes splash-glow {
-      0%, 100% { text-shadow: 0 0 12px #ff69b4, 0 0 30px #ff1493, 0 0 60px rgba(255,20,147,0.7); }
-      50%       { text-shadow: 0 0 24px #ff1493, 0 0 55px #ff69b4, 0 0 100px rgba(255,20,147,0.9); }
-    }
-
-    #splash .splash-hint {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(0.8rem, 2.5vw, 1.1rem);
-      color: #ffb6c1;
-      margin-top: 16px;
-      letter-spacing: 4px;
-      opacity: 0.75;
-      animation: fade-hint 2s ease-in-out infinite;
-    }
-
-    @keyframes fade-hint {
-      0%, 100% { opacity: 0.4; }
-      50%       { opacity: 0.9; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Love! 💖✨</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Dancing+Script:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Canvas for Floating Hearts & Sparkles (Lightweight & Lag-Free) -->
+    <canvas id="sparkle-canvas"></canvas>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash">
-    <div class="splash-heart">💗</div>
-    <div class="splash-text">Click Me</div>
-    <div class="splash-hint">tap anywhere to enter ✦</div>
-  </div>
-
-  <!-- Floating hearts canvas -->
-  <canvas id="heart-canvas"></canvas>
-
-  <!-- Growing flowers canvas -->
-  <canvas id="flower-canvas"></canvas>
-
-  <!-- Vignette -->
-  <div class="vignette"></div>
-
-  <!-- Top-left label -->
-  <div class="top-label">
-    <span class="line1">Love of my life</span>
-    <span class="line2">— tisay 💕</span>
-  </div>
-
-  <!-- Gallery -->
-  <main class="page">
-    <div class="gallery">
-
-      <div class="photo-frame">
-        <img src="1000009410.jpg" alt="Photo 1"
-             onerror="this.style.display='none';
-                      this.parentElement.innerHTML+='<div class=\'photo-placeholder\'><span class=\'ph-icon\'>🌸</span><span class=\'ph-text\'>1000009410.jpg</span></div>'"/>
-      </div>
-
-      <div class="photo-frame">
-        <img src="1000009409.jpg" alt="Photo 2"
-             onerror="this.style.display='none';
-                      this.parentElement.innerHTML+='<div class=\'photo-placeholder\'><span class=\'ph-icon\'>💕</span><span class=\'ph-text\'>1000009409.jpg</span></div>'"/>
-      </div>
-
-      <div class="photo-frame">
-        <img src="1000010119.jpg" alt="Photo 3"
-             onerror="this.style.display='none';
-                      this.parentElement.innerHTML+='<div class=\'photo-placeholder\'><span class=\'ph-icon\'>🌹</span><span class=\'ph-text\'>1000010119.jpg</span></div>'"/>
-      </div>
-
+    <!-- Floating Audio & Tools Bar -->
+    <div class="floating-controls">
+        <button id="music-btn" class="control-btn" title="Play / Pause Romantic Music">
+            <span class="icon" id="music-icon">🎵</span>
+            <span class="btn-text" id="music-text">Music</span>
+            <div class="music-wave" id="music-wave">
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </button>
+        <button id="customizer-btn" class="control-btn" title="Customize for your girl">
+            <span class="icon">⚙️</span>
+            <span class="btn-text">Customize</span>
+        </button>
     </div>
-  </main>
 
-  <!-- MP3 Audio Player -->
-  <audio id="bg-music" loop preload="auto">
-    <source src="perfect.mp3" type="audio/mpeg"/>
-  </audio>
+    <!-- Hidden HTML5 Audio Element (with fallback synthesis) -->
+    <audio id="bg-audio" preload="auto" loop></audio>
 
-  <!-- Music toggle button -->
-  <button id="music-btn" title="Toggle music" style="
-    display: none;
-    position: fixed;
-    bottom: 22px;
-    right: 22px;
-    z-index: 50;
-    background: rgba(0,0,0,0.55);
-    border: 2px solid #ff69b4;
-    border-radius: 50%;
-    width: 48px; height: 48px;
-    font-size: 1.3rem;
-    color: #ff69b4;
-    cursor: pointer;
-    box-shadow: 0 0 16px rgba(255,105,180,0.6);
-    transition: box-shadow 0.3s, transform 0.2s;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  ">♫</button>
+    <!-- ========================================== -->
+    <!-- STAGE 1: THE SURPRISE ENVELOPE OVERLAY     -->
+    <!-- ========================================== -->
+    <div id="envelope-overlay" class="envelope-overlay">
+        <div class="overlay-sparkles"></div>
+        <div class="envelope-container" id="envelope-wrapper">
+            <div class="envelope-badge">💌 A Special Message Awaits</div>
+            <div class="envelope" id="envelope-box">
+                <div class="envelope-flap"></div>
+                <div class="envelope-pocket"></div>
+                <div class="envelope-letter">
+                    <div class="letter-preview-content">
+                        <span class="mini-heart">💖</span>
+                        <h4 id="overlay-letter-title">For The Prettiest Girl</h4>
+                        <p id="overlay-letter-sub">Tap the seal to open...</p>
+                    </div>
+                </div>
+                <div class="envelope-seal" id="envelope-seal">
+                    <span class="seal-heart">❤️</span>
+                    <span class="seal-glow"></span>
+                </div>
+            </div>
+            <p class="envelope-instruction">
+                <span class="sparkle-icon">✨</span>
+                <span id="envelope-tap-text">Tap the wax seal to unwrap your birthday surprise!</span>
+                <span class="sparkle-icon">✨</span>
+            </p>
+        </div>
+    </div>
 
-  <script>
-    // ── Splash dismiss + MP3 autoplay ────────────────────────────────────────
-    const splash    = document.getElementById('splash');
-    const music     = document.getElementById('bg-music');
-    const musicBtn  = document.getElementById('music-btn');
+    <!-- ========================================== -->
+    <!-- STAGE 2: MAIN BIRTHDAY WONDERLAND          -->
+    <!-- ========================================== -->
+    <main id="main-content" class="main-content hidden">
 
-    music.volume = 0.75;
+        <!-- HERO SECTION -->
+        <header class="hero-section">
+            <div class="hero-badge">
+                <span class="sparkle">✨</span>
+                <span>Today is all about YOU</span>
+                <span class="sparkle">✨</span>
+            </div>
 
-    splash.addEventListener('click', () => {
-      // Dismiss splash
-      splash.classList.add('hide');
-      setTimeout(() => splash.remove(), 1300);
+            <h1 class="hero-title">
+                Happy Birthday, <br class="mobile-break">
+                <span class="highlight-name" id="display-her-name">My Love</span>
+                <span class="heart-pulse">❤️</span>
+            </h1>
 
-      // Play MP3
-      music.play().catch(() => {});
+            <p class="hero-subtitle" id="display-subtitle">
+                To the girl who brings sunshine into my days and starlight into my nights.
+            </p>
 
-      // Show music button
-      setTimeout(() => {
-        musicBtn.style.display = 'flex';
-      }, 1400);
-    });
+            <!-- Relationship & Birthday Timer Widget -->
+            <div class="timer-card glass-panel">
+                <div class="timer-header">
+                    <span class="timer-icon">⏳</span>
+                    <span class="timer-title" id="timer-title">Every second with you is a blessing:</span>
+                </div>
+                <div class="timer-grid">
+                    <div class="timer-col">
+                        <span class="timer-num" id="timer-days">0</span>
+                        <span class="timer-label">Days</span>
+                    </div>
+                    <div class="timer-col">
+                        <span class="timer-num" id="timer-hours">0</span>
+                        <span class="timer-label">Hours</span>
+                    </div>
+                    <div class="timer-col">
+                        <span class="timer-num" id="timer-mins">0</span>
+                        <span class="timer-label">Minutes</span>
+                    </div>
+                    <div class="timer-col">
+                        <span class="timer-num" id="timer-secs">0</span>
+                        <span class="timer-label">Seconds</span>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-    // Pause / resume toggle
-    let musicPlaying = true;
-    musicBtn.addEventListener('click', () => {
-      if (musicPlaying) {
-        music.pause();
-        musicBtn.textContent = '▶';
-        musicBtn.style.boxShadow = '0 0 8px rgba(255,105,180,0.3)';
-      } else {
-        music.play();
-        musicBtn.textContent = '♫';
-        musicBtn.style.boxShadow = '0 0 16px rgba(255,105,180,0.6)';
-      }
-      musicPlaying = !musicPlaying;
-    });
+        <!-- SECTION: INTERACTIVE BIRTHDAY CAKE -->
+        <section class="section-container" id="cake-section">
+            <div class="section-header">
+                <span class="section-tag">🎂 Time To Celebrate</span>
+                <h2 class="section-title">Make a Birthday Wish</h2>
+                <p class="section-sub">Close your eyes, make the sweetest wish in your heart, and blow out the candles!</p>
+            </div>
 
-    musicBtn.addEventListener('mouseenter', () => { musicBtn.style.transform = 'scale(1.15)'; });
-    musicBtn.addEventListener('mouseleave', () => { musicBtn.style.transform = 'scale(1)'; });
-  </script>
+            <div class="cake-display glass-panel">
+                <div class="cake-wrapper" id="cake-wrapper">
+                    <!-- Top Tier (Smallest, on top with candles) -->
+                    <div class="cake-tier cake-tier-top">
+                        <div class="frosting-drops"></div>
+                        <!-- Candle 1 -->
+                        <div class="candle candle-1 active" id="candle-1">
+                            <div class="candle-flame"></div>
+                            <div class="candle-smoke"></div>
+                            <div class="candle-stick"></div>
+                        </div>
+                        <!-- Candle 2 (Center) -->
+                        <div class="candle candle-2 active" id="candle-2">
+                            <div class="candle-flame"></div>
+                            <div class="candle-smoke"></div>
+                            <div class="candle-stick"></div>
+                        </div>
+                        <!-- Candle 3 -->
+                        <div class="candle candle-3 active" id="candle-3">
+                            <div class="candle-flame"></div>
+                            <div class="candle-smoke"></div>
+                            <div class="candle-stick"></div>
+                        </div>
+                    </div>
 
-  <script>
-    /* ══════════════════════════════════════════
-       FLOATING PINK HEARTS — CANVAS
-    ══════════════════════════════════════════ */
-    const canvas = document.getElementById('heart-canvas');
-    const ctx    = canvas.getContext('2d');
-    let W, H;
+                    <!-- Middle Tier -->
+                    <div class="cake-tier cake-tier-middle">
+                        <div class="frosting-drops"></div>
+                    </div>
 
-    function resize() {
-      W = canvas.width  = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
+                    <!-- Bottom Tier (Widest base) -->
+                    <div class="cake-tier cake-tier-bottom">
+                        <div class="frosting-drops"></div>
+                    </div>
 
-    function heartPath(x, y, s) {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(s, s);
-      ctx.beginPath();
-      ctx.moveTo(0, -0.5);
-      ctx.bezierCurveTo( 0.5, -1,  1,  0.2,  0,  0.8);
-      ctx.bezierCurveTo(-1,   0.2, -0.5, -1,  0, -0.5);
-      ctx.closePath();
-      ctx.restore();
-    }
+                    <!-- Plate at the bottom -->
+                    <div class="cake-plate"></div>
+                </div>
 
-    const PINKS = [
-      '#ff69b4','#ff1493','#ffb6c1',
-      '#ff85c1','#f472b6','#fda4d0',
-      '#e91e8c','#ff4da6'
-    ];
+                <div class="cake-actions">
+                    <button class="blow-btn" id="blow-candles-btn">
+                        <span>💨</span>
+                        <span id="blow-btn-text">Click to Blow Out Candles!</span>
+                    </button>
+                    <p class="cake-hint" id="cake-hint">Tip: Tap the flames or click the button above!</p>
+                </div>
 
-    function mkHeart() {
-      return {
-        x:    Math.random() * W,
-        y:    H + 10 + Math.random() * H,
-        s:    5 + Math.random() * 24,
-        spd:  0.45 + Math.random() * 1.6,
-        dr:   (Math.random() - 0.5) * 0.7,
-        al:   0.18 + Math.random() * 0.65,
-        wb:   Math.random() * Math.PI * 2,
-        wbs:  0.016 + Math.random() * 0.028,
-        ci:   Math.floor(Math.random() * PINKS.length),
-        spin: (Math.random() - 0.5) * 0.015,
-        rot:  Math.random() * Math.PI * 2,
-      };
-    }
+                <!-- Wish Success Message -->
+                <div class="wish-reveal-box hidden" id="wish-reveal-box">
+                    <div class="wish-stars">🎉 🌟 🎂 🌟 🎉</div>
+                    <h3>Your Wish is Registered with the Stars!</h3>
+                    <p id="wish-custom-msg">May every dream in your heart come true this year. I will do everything in my power to keep making you smile!</p>
+                    <button class="re-light-btn" id="relight-btn">🕯️ Relight Candles</button>
+                </div>
+            </div>
+        </section>
 
-    const HEARTS = Array.from({ length: 80 }, mkHeart);
+        <!-- SECTION: REASONS WHY I LOVE YOU (3D FLIP CARDS) -->
+        <section class="section-container" id="reasons-section">
+            <div class="section-header">
+                <span class="section-tag">💖 From My Heart</span>
+                <h2 class="section-title">A Few Reasons Why I Love You</h2>
+                <p class="section-sub">Out of millions of reasons, here are just a few... (Click any card to flip it!)</p>
+            </div>
 
-    function loop() {
-      ctx.clearRect(0, 0, W, H);
+            <div class="reasons-grid" id="reasons-grid">
+                <!-- Dynamically populated flip cards -->
+            </div>
+        </section>
 
-      for (const h of HEARTS) {
-        h.wb  += h.wbs;
-        h.rot += h.spin;
-        const wx = Math.sin(h.wb) * 18;
+        <!-- SECTION: HANDWRITTEN LOVE LETTER -->
+        <section class="section-container" id="letter-section">
+            <div class="section-header">
+                <span class="section-tag">💌 Just For You</span>
+                <h2 class="section-title">A Letter From The Bottom Of My Heart</h2>
+            </div>
 
-        // glow halo
-        ctx.globalAlpha = h.al * 0.22;
-        ctx.fillStyle   = PINKS[h.ci];
-        ctx.shadowColor = '#ff1493';
-        ctx.shadowBlur  = 28;
-        heartPath(h.x + wx, h.y, h.s * 1.35);
-        ctx.fill();
+            <div class="love-letter-parchment glass-panel">
+                <div class="letter-stamp">
+                    <span>SEALED</span>
+                    <span>WITH LOVE</span>
+                </div>
 
-        // main heart
-        ctx.globalAlpha = h.al;
-        ctx.shadowBlur  = 12;
-        heartPath(h.x + wx, h.y, h.s);
-        ctx.fill();
+                <div class="letter-inner" id="letter-content-area">
+                    <p class="letter-salutation" id="letter-salutation">My Dearest,</p>
+                    <div class="letter-paragraphs" id="letter-body">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div class="letter-closing">
+                        <p class="closing-signoff" id="letter-signoff">With all my love and whole heart,</p>
+                        <p class="closing-signature" id="letter-signature">Your Favorite Person ❤️</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        ctx.shadowBlur = 0;
+        <!-- SECTION: "OPEN WHEN..." MINI ENVELOPES -->
+        <section class="section-container" id="open-when-section">
+            <div class="section-header">
+                <span class="section-tag">📬 Little Reminders</span>
+                <h2 class="section-title">"Open When..." Letters</h2>
+                <p class="section-sub">Keep these letters handy whenever you need a reminder of how much you are cherished.</p>
+            </div>
 
-        h.y -= h.spd;
-        h.x += h.dr * 0.28;
+            <div class="open-when-grid" id="open-when-grid">
+                <!-- Dynamic cards with envelopes -->
+            </div>
+        </section>
 
-        if (h.y < -h.s * 2.5) {
-          Object.assign(h, mkHeart());
-          h.y = H + h.s;
-        }
-      }
+        <!-- SECTION: VIRTUAL GIFT BOX -->
+        <section class="section-container" id="gift-section">
+            <div class="section-header">
+                <span class="section-tag">🎁 Surprise Inside</span>
+                <h2 class="section-title">One Last Birthday Surprise</h2>
+                <p class="section-sub">I wrapped this especially for you. Tap the gift box to untie the ribbon!</p>
+            </div>
 
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(loop);
-    }
+            <div class="gift-showcase glass-panel">
+                <div class="gift-box" id="gift-box">
+                    <div class="gift-lid" id="gift-lid">
+                        <div class="gift-bow"></div>
+                        <div class="gift-ribbon-v"></div>
+                    </div>
+                    <div class="gift-body">
+                        <div class="gift-ribbon-v-body"></div>
+                        <div class="gift-ribbon-h-body"></div>
+                    </div>
+                </div>
 
-    loop();
+                <p class="gift-tap-hint" id="gift-hint">🎁 Tap to unwrap!</p>
 
-    /* ══════════════════════════════════════════
-       SPARKLE DOTS
-    ══════════════════════════════════════════ */
-    function addSparkle() {
-      const el = document.createElement('div');
-      el.className = 'sparkle';
-      const size = 2 + Math.random() * 5;
-      const dur  = 4 + Math.random() * 5;
-      el.style.cssText = `
-        left: ${Math.random() * 100}%;
-        bottom: ${Math.random() * 20}%;
-        width: ${size}px;
-        height: ${size}px;
-        animation-duration: ${dur}s;
-        animation-delay: ${Math.random() * dur}s;
-        background: ${PINKS[Math.floor(Math.random() * PINKS.length)]};
-        box-shadow: 0 0 ${size * 2}px ${PINKS[3]};
-      `;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), (dur + 1) * 1000);
-    }
+                <div class="gift-revealed-content hidden" id="gift-revealed-box">
+                    <div class="gift-badge">✨ UNLOCKED SURPRISE ✨</div>
+                    <h3 id="gift-title-reveal">Happy Birthday to My Forever Girl!</h3>
+                    <p id="gift-text-reveal">
+                        My real gift is my promise: to always listen, to make you laugh on your hardest days, to hold you tight, and to build a life full of happiness, peace, and adventures with you.
+                    </p>
+                    <div class="gift-hearts">💖 💕 💗 💓 💖</div>
+                </div>
+            </div>
+        </section>
 
-    setInterval(addSparkle, 300);
-  </script>
+        <!-- FOOTER -->
+        <footer class="romantic-footer">
+            <p>Crafted with endless love for <span class="footer-name" id="footer-her-name">Her</span></p>
+            <p class="footer-sub">Forever & Always ❤️</p>
+        </footer>
+    </main>
 
-  <script>
-    /* ══════════════════════════════════════════
-       GROWING PINK FLOWERS — CANVAS
-    ══════════════════════════════════════════ */
-    const FC  = document.getElementById('flower-canvas');
-    const FCX = FC.getContext('2d');
-    let FW = FC.width  = window.innerWidth;
-    let FH = FC.height = window.innerHeight;
+    <!-- ========================================== -->
+    <!-- MODAL 1: "OPEN WHEN" LETTER VIEWER         -->
+    <!-- ========================================== -->
+    <div id="open-when-modal" class="modal-backdrop hidden">
+        <div class="open-when-dialog glass-panel">
+            <button class="modal-close-btn" id="open-when-close">&times;</button>
+            <div class="open-when-header">
+                <span class="dialog-icon">💌</span>
+                <h3 id="open-when-dialog-title">Letter Title</h3>
+                <span class="badge" id="open-when-dialog-badge">Badge</span>
+            </div>
+            <div class="open-when-body">
+                <p id="open-when-dialog-text">Letter text goes here...</p>
+            </div>
+            <div class="open-when-footer">
+                <button class="btn-primary" id="open-when-confirm-btn">I feel better now ❤️</button>
+            </div>
+        </div>
+    </div>
 
-    window.addEventListener('resize', () => {
-      FW = FC.width  = window.innerWidth;
-      FH = FC.height = window.innerHeight;
-    });
+    <!-- ========================================== -->
+    <!-- MODAL 2: EASY CUSTOMIZE DIALOG (GEAR ⚙️)   -->
+    <!-- ========================================== -->
+    <div id="customize-modal" class="modal-backdrop hidden">
+        <div class="customize-dialog glass-panel">
+            <button class="modal-close-btn" id="customize-close">&times;</button>
+            <div class="customize-header">
+                <span class="dialog-icon">⚙️</span>
+                <h3>Personalize This Birthday Site</h3>
+                <p>Easily edit names, dates, and sweet notes for your girl!</p>
+            </div>
 
-    // Ease-out-back for a springy grow feel
-    function easeOutBack(t) {
-      const c1 = 1.70158, c3 = c1 + 1;
-      return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-    }
-    function easeInOut(t) {
-      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    }
+            <div class="customize-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Her Name / Nickname:</label>
+                        <input type="text" id="cfg-her-name" placeholder="e.g. Sarah / Baby / Princess">
+                    </div>
+                    <div class="form-group">
+                        <label>Your Name:</label>
+                        <input type="text" id="cfg-your-name" placeholder="e.g. David / Your Boyfriend">
+                    </div>
+                </div>
 
-    // Draw a single flower at (x,y) with given scale and alpha
-    function drawFlower(x, y, size, alpha, petals, rot, hue) {
-      if (alpha <= 0.01 || size < 1) return;
-      FCX.save();
-      FCX.translate(x, y);
-      FCX.rotate(rot);
-      FCX.globalAlpha = Math.min(1, Math.max(0, alpha));
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Her Birthday Date:</label>
+                        <input type="date" id="cfg-bday-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Relationship / Special Start Date (Days Together):</label>
+                        <input type="date" id="cfg-love-date">
+                    </div>
+                </div>
 
-      const pLen = size * 0.52;
-      const pWid = size * 0.21;
+                <div class="form-group">
+                    <label>Main Birthday Greeting Heading:</label>
+                    <input type="text" id="cfg-greeting-title" placeholder="Happy Birthday, Beautiful! ✨">
+                </div>
 
-      for (let i = 0; i < petals; i++) {
-        FCX.save();
-        FCX.rotate((i / petals) * Math.PI * 2);
+                <div class="form-group">
+                    <label>Love Letter Message (Edit as much as you want!):</label>
+                    <textarea id="cfg-letter-text" rows="5"></textarea>
+                </div>
+            </div>
 
-        // Each petal: ellipse centered above origin
-        const grad = FCX.createRadialGradient(0, -pLen * 0.28, 0, 0, -pLen * 0.55, pLen);
-        grad.addColorStop(0,   `hsla(${hue - 15}, 95%, 88%, 1)`);
-        grad.addColorStop(0.45,`hsla(${hue},      85%, 68%, 1)`);
-        grad.addColorStop(1,   `hsla(${hue + 18}, 80%, 48%, 0.65)`);
+            <div class="customize-footer">
+                <button class="btn-secondary" id="cfg-reset-btn" title="Reset back to default">Reset Default</button>
+                <button class="btn-secondary" id="cfg-export-btn" title="Download config file">📥 Export config.js</button>
+                <button class="btn-primary" id="cfg-save-btn">Apply & Save Now 💖</button>
+            </div>
+        </div>
+    </div>
 
-        FCX.beginPath();
-        FCX.ellipse(0, -pLen * 0.55, pWid, pLen, 0, 0, Math.PI * 2);
-        FCX.fillStyle   = grad;
-        FCX.shadowColor = `hsl(${hue}, 80%, 60%)`;
-        FCX.shadowBlur  = 14;
-        FCX.fill();
-        FCX.restore();
-      }
-
-      // Center dot
-      const cr = size * 0.14;
-      const cg = FCX.createRadialGradient(0, 0, 0, 0, 0, cr);
-      cg.addColorStop(0, '#fff5fa');
-      cg.addColorStop(1, '#ffd6ec');
-      FCX.beginPath();
-      FCX.arc(0, 0, cr, 0, Math.PI * 2);
-      FCX.fillStyle   = cg;
-      FCX.shadowColor = '#ffb6c1';
-      FCX.shadowBlur  = 10;
-      FCX.fill();
-
-      FCX.restore();
-    }
-
-    function mkFlower(existingFlowers) {
-      const MIN_DIST = 160; // minimum px between flowers
-      let x, y, attempts = 0;
-
-      do {
-        x = 60 + Math.random() * (FW - 120);
-        y = 60 + Math.random() * (FH - 120);
-        attempts++;
-        // Stop trying after 80 attempts to avoid infinite loop
-        if (attempts > 80) break;
-      } while (
-        // Stay away from photo gallery centre
-        (x > FW * 0.18 && x < FW * 0.82 && y > FH * 0.22 && y < FH * 0.78) ||
-        // Stay away from other flowers
-        (existingFlowers && existingFlowers.some(f =>
-          Math.hypot(f.x - x, f.y - y) < MIN_DIST
-        ))
-      );
-
-      return {
-        x, y,
-        size:     20 + Math.random() * 22,              // smaller: 20–42px
-        petals:   5 + Math.floor(Math.random() * 3),   // 5–7
-        rot:      Math.random() * Math.PI * 2,
-        spinSpd:  (Math.random() - 0.5) * 0.003,
-        hue:      315 + Math.random() * 35,
-        phase:    'grow',
-        t:        Math.random(),
-        growDur:  1.4 + Math.random() * 1.2,
-        holdDur:  1.6 + Math.random() * 2.0,
-        fadeDur:  1.0 + Math.random() * 0.8,
-      };
-    }
-
-    // 6 flowers — well spread, not cluttered
-    const FLOWERS = [];
-    for (let i = 0; i < 6; i++) {
-      FLOWERS.push(mkFlower(FLOWERS));
-    }
-
-
-    let lastFlowerTime = performance.now();
-
-    function flowerLoop(now) {
-      const dt = Math.min((now - lastFlowerTime) / 1000, 0.05);
-      lastFlowerTime = now;
-
-      FCX.clearRect(0, 0, FW, FH);
-
-      for (const f of FLOWERS) {
-        f.rot += f.spinSpd;
-
-        // Advance time
-        const dur = f.phase === 'grow' ? f.growDur
-                  : f.phase === 'hold' ? f.holdDur
-                  : f.fadeDur;
-        f.t += dt / dur;
-
-        if (f.t >= 1) {
-          if (f.phase === 'grow') { f.phase = 'hold'; f.t = 0; }
-          else if (f.phase === 'hold') { f.phase = 'fade'; f.t = 0; }
-          else {
-            // Respawn at new random spot, away from others
-            const others = FLOWERS.filter(o => o !== f);
-            Object.assign(f, mkFlower(others));
-            f.phase = 'grow'; f.t = 0;
-          }
-        }
-
-        let scale, alpha;
-        if (f.phase === 'grow') {
-          scale = easeOutBack(Math.min(f.t, 1));
-          alpha = easeInOut(f.t);
-        } else if (f.phase === 'hold') {
-          scale = 1;
-          alpha = 1;
-        } else {
-          // Fade: breathe out slightly then vanish
-          scale = 1 + f.t * 0.18;
-          alpha = 1 - easeInOut(f.t);
-        }
-
-        drawFlower(f.x, f.y, f.size * Math.max(0, scale), alpha, f.petals, f.rot, f.hue);
-      }
-
-      requestAnimationFrame(flowerLoop);
-    }
-
-    requestAnimationFrame(flowerLoop);
-  </script>
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
